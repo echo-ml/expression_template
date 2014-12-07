@@ -1,0 +1,7 @@
+ECHO_UNARY_MATH(std::sqrt, Sqrt, sqrt)
+// ECHO_UNARY_MATH(std::sin, Sin, sin)
+// ECHO_UNARY_MATH(std::cos, Cos, cos)
+// ECHO_UNARY_MATH(std::tan, Tan, tan)
+// ECHO_UNARY_MATH(std::exp, Exp, exp)
+// ECHO_UNARY_MATH(std::log, Log, log)
+// ECHO_UNARY_MATH(std::abs, Abs, abs)
