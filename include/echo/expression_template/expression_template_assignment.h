@@ -33,7 +33,7 @@ class ExpressionTemplateAssignment {
       return make_assignment_expression(expression_template_tag() \
                                       , NAME ## AssignmentFunctor() \
                                       , make_expression(expression_template_tag(), derived) \
-                                      , rhs); \
+                                      , make_expression(expression_template_tag(), rhs)); \
     }
 #include <echo/expression_template/assignment-def.h>
 #undef ECHO_ASSIGNMENT
@@ -54,7 +54,7 @@ class ExpressionTemplateConstAssignment {
       return make_assignment_expression(expression_template_tag() \
                                       , NAME ## AssignmentFunctor() \
                                       , make_expression(expression_template_tag(), derived) \
-                                      , rhs); \
+                                      , make_expression(expression_template_tag(), rhs)); \
     }
 #include <echo/expression_template/assignment-def.h>
 #undef ECHO_ASSIGNMENT
