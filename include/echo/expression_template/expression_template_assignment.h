@@ -18,7 +18,7 @@ auto make_assignment_expression(Tag, Functor, const Lhs&, const Rhs&);
 #include <echo/expression_template/assignment-def.h>
 #undef ECHO_ASSIGNMENT
 
-template<class Tag, class Derived>
+template<class Derived, class Tag, class Scalar>
 class ExpressionTemplateAssignment {
  public:
   using expression_template_tag = Tag;
@@ -34,12 +34,19 @@ class ExpressionTemplateAssignment {
                                       , NAME ## AssignmentFunctor() \
                                       , make_expression(expression_template_tag(), derived) \
                                       , make_expression(expression_template_tag(), rhs)); \
-    }
+    } \
+    auto operator SYMBOL (Scalar rhs) { \
+      auto& derived = static_cast<Derived&>(*this); \
+      return make_assignment_expression(expression_template_tag() \
+                                      , NAME ## AssignmentFunctor() \
+                                      , make_expression(expression_template_tag(), derived) \
+                                      , make_expression(expression_template_tag(), rhs)); \
+    } 
 #include <echo/expression_template/assignment-def.h>
 #undef ECHO_ASSIGNMENT
 };
 
-template<class Tag, class Derived>
+template<class Derived, class Tag, class Scalar>
 class ExpressionTemplateConstAssignment {
  public:
   using expression_template_tag = Tag;
@@ -55,7 +62,14 @@ class ExpressionTemplateConstAssignment {
                                       , NAME ## AssignmentFunctor() \
                                       , make_expression(expression_template_tag(), derived) \
                                       , make_expression(expression_template_tag(), rhs)); \
-    }
+    } \
+    auto operator SYMBOL (Scalar rhs) const { \
+      const auto& derived = static_cast<Derived&>(*this); \
+      return make_assignment_expression(expression_template_tag() \
+                                      , NAME ## AssignmentFunctor() \
+                                      , make_expression(expression_template_tag(), derived) \
+                                      , make_expression(expression_template_tag(), rhs)); \
+    } 
 #include <echo/expression_template/assignment-def.h>
 #undef ECHO_ASSIGNMENT
 };

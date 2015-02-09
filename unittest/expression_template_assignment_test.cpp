@@ -24,9 +24,9 @@ auto make_expression(mytag, Node n) {
 
 }} //end namespace echo::expression_template
 
-struct Node1 : ExpressionTemplateConstAssignment<mytag, Node1>
+struct Node1 : ExpressionTemplateConstAssignment<Node1, mytag, double>
 {
-  using ExpressionTemplateConstAssignment<mytag, Node1>::operator=;
+  using ExpressionTemplateConstAssignment<Node1, mytag, double>::operator=;
 
   double& operator()(int i) const {
     return a[i];
@@ -34,7 +34,7 @@ struct Node1 : ExpressionTemplateConstAssignment<mytag, Node1>
   double* a;
 };
 
-struct Node2 : ExpressionTemplateAssignment<mytag, Node2>
+struct Node2 : ExpressionTemplateConstAssignment<Node2, mytag, double>
 {
   double operator()(int i) const {
     return 2*i;

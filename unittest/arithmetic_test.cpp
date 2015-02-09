@@ -36,7 +36,7 @@ auto make_expression(mytag, double x) {
   };
 }
 
-struct Node : ExpressionTemplateAssignment<mytag, Node>
+struct Node : ExpressionTemplateAssignment<Node, mytag, double>
 {
   double operator()(int i) const {
     return i;
