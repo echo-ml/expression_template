@@ -2,18 +2,19 @@
 
 #include <echo/expression_template/expression.h>
 #include <echo/enable_if.h>
+#include <echo/expression_template/map.h>
 
 namespace echo { namespace expression_template {
 
 #define ECHO_BINARY_ARITHMETIC(SYMBOL, NAME, LOWER_NAME) \
-    struct NAME ## ArithmeticFunctor { \
-      template<class Lhs, class Rhs> \
-      auto operator()(const Lhs& lhs, const Rhs& rhs) const \
-          -> decltype(lhs + rhs) \
-      { \
-        return lhs SYMBOL rhs; \
-      } \
-    }; \
+struct NAME ## ArithmeticFunctor { \
+  template<class Lhs, class Rhs> \
+  auto operator()(const Lhs& lhs, const Rhs& rhs) const \
+      -> decltype(lhs + rhs) \
+  { \
+    return lhs SYMBOL rhs; \
+  } \
+}; \
 template< \
     class Lhs \
   , class Rhs \
@@ -64,5 +65,24 @@ auto operator SYMBOL (const Lhs& lhs, const Rhs& rhs) { \
 } 
 #include <echo/expression_template/binary_arithmetic-def.h>
 #undef ECHO_BINARY_ARITHMETIC
+
+#define ECHO_UNARY_ARITHMETIC(SYMBOL, NAME, LOWER_NAME) \
+struct NAME ## ArithmeticFunctor { \
+  template<class Operand> \
+  auto operator()(const Operand& operand) const \
+      -> decltype(-operand) \
+  { \
+    return SYMBOL operand; \
+  } \
+}; \
+template< \
+    class Operand \
+  , enable_if<is_expression_template_node<Operand>> = 0 \
+> \
+auto operator SYMBOL (const Operand& operand) { \
+  return map(NAME ## ArithmeticFunctor(), operand); \
+}
+#include <echo/expression_template/unary_arithmetic-def.h>
+#undef ECHO_UNARY_ARITHMETIC
 
 }} //end namespace echo::expression_template

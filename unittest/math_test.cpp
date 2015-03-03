@@ -1,3 +1,4 @@
+#include <echo/expression_template/arithmetic.h>
 #include <echo/expression_template/math.h>
 #include <catch.hpp>
 
@@ -38,5 +39,10 @@ TEST_CASE("math") {
     REQUIRE(expr(0) == 0);
     REQUIRE(expr(1) == 1);
     REQUIRE(expr(2) == std::sqrt(2));
+  }
+  SECTION("negate") {
+    auto expr = -n1;
+    REQUIRE(expr(0) == 0);
+    REQUIRE(expr(1) == -1);
   }
 }
