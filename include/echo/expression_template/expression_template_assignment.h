@@ -1,13 +1,10 @@
 #pragma once
 
 #include <echo/expression_template/concept.h>
-#include <echo/enable_if.h>
+#include <echo/execution_context.h>
 
 namespace echo {
 namespace expression_template {
-
-// template<class Tag, class Functor, class Lhs, class Rhs>
-// auto make_assignment_expression(Tag, Functor, const Lhs&, const Rhs&);
 
 #define ECHO_ASSIGNMENT(SYMBOL, NAME, LOWER_NAME)       \
   struct NAME##AssignmentFunctor {                      \
@@ -28,6 +25,7 @@ class ExpressionTemplateAssignment {
   template <class Rhs,                                                  \
             CONCEPT_REQUIRES(concept::expression_template_node<Rhs>())> \
   auto operator SYMBOL(const Rhs& rhs) {                                \
+    CONCEPT_ASSERT(concept::expression_template_node<Rhs>());           \
     auto& derived = static_cast<Derived&>(*this);                       \
     return make_assignment_expression(                                  \
         expression_template_tag(), NAME##AssignmentFunctor(),           \
@@ -50,22 +48,25 @@ class ExpressionTemplateConstAssignment {
  public:
   using expression_template_tag = Tag;
 
-#define ECHO_ASSIGNMENT(SYMBOL, NAME, LOWER_NAME)                       \
-  template <class Rhs,                                                  \
-            CONCEPT_REQUIRES(concept::expression_template_node<Rhs>())> \
-  auto operator SYMBOL(const Rhs& rhs) const {                          \
-    const auto& derived = static_cast<const Derived&>(*this);           \
-    return make_assignment_expression(                                  \
-        expression_template_tag(), NAME##AssignmentFunctor(),           \
-        make_expression(expression_template_tag(), derived),            \
-        make_expression(expression_template_tag(), rhs));               \
-  }                                                                     \
-  auto operator SYMBOL(Scalar rhs) const {                              \
-    const auto& derived = static_cast<Derived&>(*this);                 \
-    return make_assignment_expression(                                  \
-        expression_template_tag(), NAME##AssignmentFunctor(),           \
-        make_expression(expression_template_tag(), derived),            \
-        make_expression(expression_template_tag(), rhs));               \
+#define ECHO_ASSIGNMENT(SYMBOL, NAME, LOWER_NAME)                             \
+  template <class Rhs,                                                        \
+            std::enable_if_t<                                                 \
+                !std::is_same<Rhs, ExpressionTemplateConstAssignment>::value, \
+                int> = 0,                                                     \
+            CONCEPT_REQUIRES(concept::expression_template_node<Rhs>())>       \
+  auto operator SYMBOL(const Rhs& rhs) const {                                \
+    const auto& derived = static_cast<const Derived&>(*this);                 \
+    return make_assignment_expression(                                        \
+        expression_template_tag(), NAME##AssignmentFunctor(),                 \
+        make_expression(expression_template_tag(), derived),                  \
+        make_expression(expression_template_tag(), rhs));                     \
+  }                                                                           \
+  auto operator SYMBOL(Scalar rhs) {                                          \
+    const auto& derived = static_cast<Derived&>(*this);                       \
+    return make_assignment_expression(                                        \
+        expression_template_tag(), NAME##AssignmentFunctor(),                 \
+        make_expression(expression_template_tag(), derived),                  \
+        make_expression(expression_template_tag(), rhs));                     \
   }
 #include <echo/expression_template/assignment-def.h>
 #undef ECHO_ASSIGNMENT
