@@ -15,13 +15,25 @@ auto make_expression(mytag, Node n) {
 }
 
 template<class Functor, class Node>
-auto make_map_expression(mytag, Functor f, Node node) {
-  return [=](int i) {
+struct MapExpression {
+  Functor f; Node node;
+  using expression_template_tag = mytag;
+  auto operator()(int i) {
     return f(node(i));
-  };
+  }
+};
+
+template<class Functor, class Node>
+auto make_expression(mytag, const MapExpression<Functor, Node>& e) {
+  return e;
 }
 
-struct Node //: ExpressionTemplateAssignment<mytag, Node>
+template<class Functor, class Node>
+auto make_map_expression(mytag, Functor f, Node node) {
+  return MapExpression<Functor, Node>{f, node};
+}
+
+struct Node 
 {
   using expression_template_tag = mytag;
 

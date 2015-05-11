@@ -17,6 +17,19 @@ auto make_assignment_expression(mytag, Functor f, const Lhs& lhs, const Rhs& rhs
   };
 }
 
+template<class Functor, class Lhs, class Rhs>
+struct MapExpression {
+  using expression_template_tag = mytag;
+  Functor f;
+  Lhs lhs;
+  Rhs rhs;
+};
+
+template<class Functor, class Lhs, class Rhs>
+auto make_map_expression(mytag, Functor f, const Lhs& lhs, const Rhs& rhs) {
+  return MapExpression<Functor, Lhs, Rhs>{f, lhs, rhs};
+}
+
 template<class Node>
 auto make_expression(mytag, Node n) {
   return n;
