@@ -1,6 +1,8 @@
 #pragma once
 
-#include <echo/concept2.h>
+#define DETAIL_NS detail_concept
+
+#include <echo/concept.h>
 #include <echo/expression_template/expression_template_traits.h>
 #include <echo/execution_context.h>
 
@@ -12,8 +14,7 @@ namespace concept {
 // expression_template_node //
 //////////////////////////////
 
-namespace detail {
-namespace concept {
+namespace DETAIL_NS {
 struct ExpressionTemplateNode : Concept {
   template <class T>
   auto require(T&& node) -> list<
@@ -22,11 +23,10 @@ struct ExpressionTemplateNode : Concept {
           expression_template_traits::expression_template_tag<T>(), node))>()>;
 };
 }
-}
 
 template <class T>
 constexpr bool expression_template_node() {
-  return models<detail::concept::ExpressionTemplateNode, T>();
+  return models<DETAIL_NS::ExpressionTemplateNode, T>();
 }
 
 //////////
@@ -43,9 +43,7 @@ constexpr bool node() {
 // compatible_nodes //
 //////////////////////
 
-namespace detail {
-namespace concept {
-
+namespace DETAIL_NS {
 template <class ExpressionTemplateTag, class Node,
           CONCEPT_REQUIRES(expression_template_node<Node>())>
 auto compatible_node_impl(Node && )
@@ -68,24 +66,22 @@ constexpr bool compatible_node() {
 
 struct CompatibleNodes : Concept {
   template <class... Nodes>
-  auto require(Nodes&&...) -> list<const_algorithm::and_c<compatible_node<
+  auto require(Nodes&&...) -> list<and_c<compatible_node<
       expression_template_traits::first_expression_template_tag<Nodes...>,
       Nodes>()...>()>;
 };
 }
-}
 
 template <class... Nodes>
 constexpr bool compatible_nodes() {
-  return models<detail::concept::CompatibleNodes, Nodes...>();
+  return models<DETAIL_NS::CompatibleNodes, Nodes...>();
 }
 
 //////////////
 // mappable //
 //////////////
 
-namespace detail {
-namespace concept {
+namespace DETAIL_NS {
 struct Mappable : Concept {
   template <class Functor, class... Nodes>
   auto require(Functor&& functor, Nodes&&... nodes) -> list<
@@ -98,12 +94,13 @@ struct Mappable : Concept {
                           nodes)...))>()>;
 };
 }
-}
 
 template <class Functor, class... Nodes>
 constexpr bool mappable() {
-  return models<detail::concept::Mappable, Functor, Nodes...>();
+  return models<DETAIL_NS::Mappable, Functor, Nodes...>();
 }
 }
 }
 }
+
+#undef DETAIL_NS

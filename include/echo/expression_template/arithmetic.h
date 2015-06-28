@@ -1,7 +1,6 @@
 #pragma once
 
 #include <echo/expression_template/concept.h>
-#include <echo/enable_if.h>
 #include <echo/expression_template/map.h>
 
 namespace echo {

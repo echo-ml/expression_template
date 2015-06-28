@@ -1,13 +1,12 @@
 #pragma once
 
 #include <echo/expression_template/concept.h>
-#include <echo/const_algorithm.h>
 
 namespace echo {
 namespace expression_template {
 
 template <class Functor, class... Nodes,
-          CONCEPT_REQUIRES(const_algorithm::or_c<concept::node<Nodes>()...>() &&
+          CONCEPT_REQUIRES(or_c<concept::node<Nodes>()...>() &&
                            concept::mappable<Functor, Nodes...>())>
 auto map(Functor functor, const Nodes&... nodes) {
   auto expression_template_tag =

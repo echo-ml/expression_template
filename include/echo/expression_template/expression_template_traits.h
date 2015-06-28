@@ -1,6 +1,8 @@
 #pragma once
 
-#include <echo/concept2.h>
+#define DETAIL_NS detail_expression_template_traits
+
+#include <echo/concept.h>
 
 namespace echo {
 namespace expression_template_traits {
@@ -17,13 +19,13 @@ using expression_template_tag =
 // first_expression_template_tag //
 ///////////////////////////////////
 
-namespace detail {
+namespace DETAIL_NS {
 namespace expression_template_traits {
 ECHO_MAKE_TYPE_QUERIER(expression_template_tag)
 }
 }
 
-namespace detail {
+namespace DETAIL_NS {
 namespace expression_template_traits {
 template <bool, class...>
 struct first_expression_template_tag_impl {};
@@ -52,7 +54,9 @@ struct first_expression_template_tag_impl2<NodeFirst, NodesRest...>
 
 template <class... Nodes>
 using first_expression_template_tag =
-    typename detail::expression_template_traits::
+    typename DETAIL_NS::expression_template_traits::
         first_expression_template_tag_impl2<Nodes...>::type;
 }
 }
+
+#undef DETAIL_NS

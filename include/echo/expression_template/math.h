@@ -2,8 +2,6 @@
 
 #include <cmath>
 
-#include <echo/const_algorithm.h>
-#include <echo/enable_if.h>
 #include <echo/expression_template/map.h>
 #include <echo/expression_template/concept.h>
 
