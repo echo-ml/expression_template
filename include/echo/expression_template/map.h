@@ -5,6 +5,9 @@
 namespace echo {
 namespace expression_template {
 
+//------------------------------------------------------------------------------
+// map
+//------------------------------------------------------------------------------
 template <class Functor, class... Nodes,
           CONCEPT_REQUIRES(or_c<concept::node<Nodes>()...>() &&
                            concept::mappable<Functor, Nodes...>())>

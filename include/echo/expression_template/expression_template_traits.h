@@ -7,18 +7,16 @@
 namespace echo {
 namespace expression_template_traits {
 
-/////////////////////////////
-// expression_template_tag //
-/////////////////////////////
-
+//------------------------------------------------------------------------------
+// expression_template_tag
+//------------------------------------------------------------------------------
 template <class ExpressionTemplateNode>
 using expression_template_tag =
     typename ExpressionTemplateNode::expression_template_tag;
 
-///////////////////////////////////
-// first_expression_template_tag //
-///////////////////////////////////
-
+//------------------------------------------------------------------------------
+// first_expression_template_tag
+//------------------------------------------------------------------------------
 namespace DETAIL_NS {
 namespace expression_template_traits {
 ECHO_MAKE_TYPE_QUERIER(expression_template_tag)

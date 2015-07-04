@@ -10,10 +10,9 @@ namespace echo {
 namespace expression_template {
 namespace concept {
 
-//////////////////////////////
-// expression_template_node //
-//////////////////////////////
-
+//------------------------------------------------------------------------------
+// expression_template_node
+//------------------------------------------------------------------------------
 namespace DETAIL_NS {
 struct ExpressionTemplateNode : Concept {
   template <class T>
@@ -29,20 +28,18 @@ constexpr bool expression_template_node() {
   return models<DETAIL_NS::ExpressionTemplateNode, T>();
 }
 
-//////////
-// node //
-//////////
-
+//------------------------------------------------------------------------------
+// node
+//------------------------------------------------------------------------------
 template <class T>
 constexpr bool node() {
   return expression_template_node<T>() ||
          execution_context::concept::scalar<T>();
 }
 
-//////////////////////
-// compatible_nodes //
-//////////////////////
-
+//------------------------------------------------------------------------------
+// compatible_nodes
+//------------------------------------------------------------------------------
 namespace DETAIL_NS {
 template <class ExpressionTemplateTag, class Node,
           CONCEPT_REQUIRES(expression_template_node<Node>())>
@@ -77,10 +74,9 @@ constexpr bool compatible_nodes() {
   return models<DETAIL_NS::CompatibleNodes, Nodes...>();
 }
 
-//////////////
-// mappable //
-//////////////
-
+//------------------------------------------------------------------------------
+// mappable
+//------------------------------------------------------------------------------
 namespace DETAIL_NS {
 struct Mappable : Concept {
   template <class Functor, class... Nodes>
