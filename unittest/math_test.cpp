@@ -5,44 +5,46 @@
 using namespace echo;
 using namespace echo::expression_template;
 
-namespace echo { namespace expression_template {
+namespace echo {
+namespace expression_template {
 
 struct mytag {};
 
-template<class Node>
+template <class Node>
 auto make_expression(mytag, Node n) {
   return n;
 }
 
-template<class Functor, class Node>
+template <class Functor, class Node>
 struct MapExpression {
-  Functor f; Node node;
+  Functor f;
+  Node node;
   using expression_template_tag = mytag;
-  auto operator()(int i) {
-    return f(node(i));
-  }
+  using structure = execution_context::structure::general;
+  auto dimensionality() const { return DimensionalityC<3>(); }
+  const auto& evaluator() const { return *this; }
+  auto operator()(int i) const { return f(node(i)); }
 };
 
-template<class Functor, class Node>
+template <class Functor, class Node>
 auto make_expression(mytag, const MapExpression<Functor, Node>& e) {
   return e;
 }
 
-template<class Functor, class Node>
+template <class Functor, class Node>
 auto make_map_expression(mytag, Functor f, Node node) {
   return MapExpression<Functor, Node>{f, node};
 }
 
-struct Node 
-{
+struct Node {
   using expression_template_tag = mytag;
+  auto dimensionality() const { return DimensionalityC<3>(); }
+  const auto& evaluator() const { return *this; }
 
-  double operator()(int i) const {
-    return i;
-  }
+  double operator()(int i) const { return i; }
 };
-
-}} //end namespace echo::expression_template
+}
+}  // end namespace echo::expression_template
 
 TEST_CASE("math") {
   Node n1;

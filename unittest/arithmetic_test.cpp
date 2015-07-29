@@ -10,11 +10,26 @@ namespace echo { namespace expression_template {
 
 struct mytag {};
 
+template <class Evaluator>
+struct AssignmentExpression
+    : ExpressionTemplateConstAssignment<AssignmentExpression<Evaluator>, mytag, double> {
+  AssignmentExpression(const Evaluator& evaluator) : _evaluator(evaluator) {}
+  using structure = execution_context::structure::general;
+  auto dimensionality() const { return DimensionalityC<3>(); }
+  const auto& evaluator() const { return _evaluator; }
+  Evaluator _evaluator;
+};
+
+template<class Evaluator>
+auto make_assignment_expression(Evaluator evaluator) { 
+  return AssignmentExpression<Evaluator>(evaluator);
+}
+
 template<class Functor, class Lhs, class Rhs>
 auto make_assignment_expression(mytag, Functor f, const Lhs& lhs, const Rhs& rhs) {
-  return [=](int i) {
+  return make_assignment_expression([=](int i) {
     return f(lhs(i), rhs(i));
-  };
+  });
 }
 
 template<class Functor, class Lhs, class Rhs>
@@ -38,6 +53,8 @@ auto make_expression(mytag, double x) {
 
 struct Node : ExpressionTemplateAssignment<Node, mytag, double>
 {
+  auto dimensionality() const { return DimensionalityC<3>(); }
+  const auto& evaluator() const { return *this; }
   double operator()(int i) const {
     return i;
   }

@@ -18,7 +18,7 @@ struct ExpressionTemplateNode : Concept {
   template <class T>
   auto require(T&& node) -> list<
       valid<expression_template_traits::expression_template_tag<T>>(),
-      valid<decltype(make_expression(
+      execution_context::concept::expression<decltype(make_expression(
           expression_template_traits::expression_template_tag<T>(), node))>()>;
 };
 }
@@ -94,6 +94,27 @@ struct Mappable : Concept {
 template <class Functor, class... Nodes>
 constexpr bool mappable() {
   return models<DETAIL_NS::Mappable, Functor, Nodes...>();
+}
+
+//------------------------------------------------------------------------------
+// reducible
+//------------------------------------------------------------------------------
+namespace DETAIL_NS {
+struct Reducible : Concept {
+  template <class Identity, class Reducer, class Node>
+  auto require(Identity&& identity, Reducer&& reducer, Node&& node) -> list<
+      expression_template_node<Node>(),
+      1
+      // execution_context::concept::reduction_expression<decltype(
+      //     make_reduction_expression(typename Node::expression_template_tag(),
+      //                               identity, reducer, node))>()
+                                    >;
+};
+}
+
+template <class Identity, class Reducer, class Node>
+constexpr bool reducible() {
+  return models<DETAIL_NS::Reducible, Identity, Reducer, Node>();
 }
 }
 }
